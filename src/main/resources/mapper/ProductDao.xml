@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ishopmall.dao.ProductDao">
+    <resultMap id="Product" type="Product">
+        <id column="id" property="id"></id>
+        <result column="class_id" property="classId"></result>
+        <result column="name" property="name"></result>
+        <result column="title" property="title"></result>
+        <result column="sale_price" property="salePrice"></result>
+        <result column="promotion_price" property="promotionPrice"></result>
+        <result column="prods_num" property="prodsNum"></result>
+        <result column="sale_num" property="saleNum"></result>
+        <result column="imgurl" property="imgUrl"></result>
+        <result column="remark" property="remark"></result>
+        <result column="creatTime" property="created"></result>
+        <result column="updateTime" property="updated"></result>
+        <result column="status" property="status"></result>
+    </resultMap>
+    <resultMap id="shopItemlist" type="ItemCat">
+        <id column="id" property="Id"></id>
+        <result column="parent_id" property="parentId"></result>
+        <result column="name" property="name"></result>
+        <result column="status" property="status"></result>
+        <association property="parentItemCat" javaType="ItemCat">
+            <id column="p_id" property="Id"></id>
+            <result column="p_name" property="name"/>
+            <result column="status" property="status"></result>
+        </association>
+    </resultMap>
+    <resultMap id="minProduct" type="Product">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="promotion_price" property="promotionPrice"></result>
+        <result column="imgurl" property="imgUrl"></result>
+    </resultMap>
+    <resultMap id="loadProductAttribute" type="ProductAttribute">
+        <id column="id" property="id"></id>
+        <result column="prod_id" property="prodId"></result>
+        <result column="type_id" property="typeId"></result>
+        <result column="type_name" property="typeName"></result>
+        <association property="parentAttribute" javaType="ProductAttribute">
+            <id column="p_id" property="id"></id>
+            <result column="p_name" property="typeName"></result>
+            <result column="type_id" property="typeId"></result>
+        </association>
+    </resultMap>
+    <select id="loadProductInfo" resultMap="Product">
+        SELECT * FROM tb_prods_info WHERE id=#{id};
+    </select>
+    <select id="loadProductItem" resultMap="shopItemlist">
+        select * from tb_item_cat d
+        left join
+        (select id p_id,name p_name from tb_item_cat) p
+        on d.parent_id=p.p_id where d.id=#{Id};
+    </select>
+    <select id="loadProductAttribute" resultMap="loadProductAttribute">
+        SELECT * FROM tb_prods_type d
+        left join
+        (select id p_id,type_name p_name,type_id p_type_id from tb_prods_type) p
+        on d.type_id=p.p_id where d.prod_id=#{id};
+    </select>
+    <select id="loadRecommended" resultMap="minProduct">
+        SELECT id,name,promotion_price,imgurl FROM tb_prods_info WHERE class_id=#{ItemCatId} AND status=1 ORDER BY updated DESC
+    </select>
+</mapper>

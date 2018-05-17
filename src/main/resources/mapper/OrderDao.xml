@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ishopmall.dao.OrderDao">
+	<!-- 订单信息 -->
+	<resultMap type="com.ishopmall.model.Order" id="Order">
+		<id column="id" property="id"/>
+		<result column="prod_id" property="prodId"/>
+		<result column="prod_imgurl" property="prodImgurl"/>
+		<result column="prod_num" property="prodNum"/>
+		<result column="pay_money" property="payMoney"/>
+		<result column="distribution" property="distribution"/>
+		<result column="post_fee" property="postFee"/>
+		<result column="end_time" property="endTime"/>
+		<result column="pay_monent" property="payMonent"/>
+		<result column="shipping_name" property="shippingName"/>
+		<result column="shipping_id" property="shippingId"/>
+		<result column="user_receiver" property="userReceiver"/>
+		<result column="user_phone" property="userPhone"/>
+		<result column="user_province" property="userProvince"/>
+		<result column="user_city" property="userCity"/>
+		<result column="user_district" property="userDistrict"/>
+		<result column="user_address" property="userAddress"/>
+		<result column="user_id" property="userId"/>
+		<result column="buyer_nick" property="buyerNick"/>
+		<result column="buyer_rate" property="buyerRate"/>
+		<result column="status" property="status"/>
+		<result column="pay_status" property="payStatus"/>
+		<result column="created" property="created"/>
+		<result column="updated" property="updated"/>
+	</resultMap>
+	
+	<!-- 物流信息 -->
+	<resultMap type="com.ishopmall.model.Shipping" id="Shipping">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="post_fee" property="postFee"/>
+	</resultMap>
+	
+	<!-- 插入一条订单信息 -->
+	<insert id="addOrder">
+			insert into tb_orders_info 
+			values
+			(#{id},#{prodId},#{prodImgurl},#{prodNum},#{payMoney},#{distribution},
+			#{postFee},#{endTime,jdbcType=TIMESTAMP},#{payMonent},#{shippingName},#{shippingId},
+			#{userReceiver},#{userPhone},#{userProvince},#{userCity},#{userDistrict},
+			#{userAddress},#{userId},#{buyerNick},#{buyerRate},#{status},#{payStatus},
+			#{created,jdbcType=TIMESTAMP},#{updated,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<!-- 查找物流信息 -->
+	<select id="findShipping" resultMap="Shipping">
+		select * from tb_shipping_info where name=#{shippingName}
+	</select>  
+	
+	<!-- 修改订单的发货状态和支付状态 -->
+	<update id="changePaystate">
+		update tb_orders_info 
+		set status=#{status},pay_status=#{payStatus} 
+		where id=#{orderId}
+	</update> 
+	
+	<!-- 修改订单的信息 -->
+	<update id="changeOrderStatus">
+		update tb_orders_info 
+		<set>
+			<if test="prodId!=null">prod_id=#{prodId},</if>
+			<if test="prodImgurl!=null">prod_imgurl=#{prodImgurl},</if>
+			<if test="prodNum!=null">prod_num=#{prodNum},</if>
+			<if test="payMoney!=null">pay_money=#{payMoney},</if>
+			<if test="distribution!=null">distribution=#{distribution},</if>
+			<if test="postFee!=null">post_fee=#{postFee},</if>
+			<if test="endTime!=null">end_time=#{endTime,jdbcType=TIMESTAMP},</if>
+			<if test="payMonent!=null">pay_monent=#{payMonent},</if>
+			<if test="shippingName!=null">shipping_name=#{shippingName},</if>
+			<if test="shippingId!=null">shipping_id=#{shippingId},</if>
+			<if test="userReceiver!=null">user_receiver=#{userReceiver},</if>
+			<if test="userPhone!=null">user_phone=#{userPhone},</if>
+			<if test="userProvince!=null">user_province=#{userProvince},</if>
+			<if test="userCity!=null">user_city=#{userCity},</if>
+			<if test="userDistrict!=null">user_district=#{userDistrict},</if>
+			<if test="userAddress!=null">user_address=#{userAddress},</if>
+			<if test="userId!=null">user_id=#{userId},</if>
+			<if test="buyerNick!=null">buyer_nick=#{buyerNick},</if>
+			<if test="buyerRate!=null">buyer_rate=#{buyerRate},</if>
+			<if test="status!=null">status=#{status},</if>
+			<if test="payStatus!=null">pay_status=#{payStatus},</if>
+			<if test="created!=null">created=#{created,jdbcType=TIMESTAMP},</if>
+			<if test="updated!=null">updated=#{updated,jdbcType=TIMESTAMP}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+</mapper>

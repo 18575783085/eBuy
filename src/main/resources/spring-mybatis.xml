@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 自动扫描service包下所有使用的注解 -->
+    <context:component-scan base-package="com.ishopmall.service"></context:component-scan>
+
+    <!-- 第一种方式：加载一个properties文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties"/>
+    </bean>
+
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass" value="${jdbcDriver}"></property>
+        <property name="jdbcUrl" value="${jdbcUrl}"></property>
+        <property name="user" value="${username}"></property>
+        <property name="password" value="${password}"></property>
+        <property name="maxPoolSize" value="${c3p0.maxPoolSize}"></property>
+        <property name="minPoolSize" value="5"></property>
+        <property name="autoCommitOnClose" value="${c3p0.autoCommitOnClose}"/>
+        <property name="checkoutTimeout" value="${c3p0.checkoutTimeout}"/>
+        <property name="acquireRetryAttempts" value="${c3p0.acquireRetryAttempts}"/>
+        <!--最大空闲时间，超过空闲时间的连接将被丢弃。为0或负数则永不丢弃。默认为0 -->
+        <property name="maxIdleTime" value="5"/>
+    </bean>
+
+    <!-- 配置SqlSessionFactory，mybatis和spring完美整合，不需要mybatis的配置映射文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 扫描model包 使用别名 -->
+        <property name="typeAliasesPackage" value="com.ishopmall.model"></property>
+        <!-- 加载sqlMapConfig配置文件 -->
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"/>
+        <!-- 扫描sql配置文件:mapper需要的xml文件 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+    </bean>
+    <!-- 配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <property name="basePackage" value="com.ishopmall.dao"></property>
+    </bean>
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+    <!-- aop注解开关 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    <!--&lt;!&ndash; 开启注解&ndash;&gt;-->
+    <context:annotation-config></context:annotation-config>
+    <!--&lt;!&ndash; 配置切面通知 &ndash;&gt;-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 代表指定方法的前缀，在这些方法执行的事务管理 -->
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"></tx:method>
+            <tx:method name="delete*" propagation="REQUIRED"></tx:method>
+            <tx:method name="select*" propagation="REQUIRED" read-only="true"></tx:method>
+            <tx:method name="find*" propagation="REQUIRED" read-only="true"></tx:method>
+            <tx:method name="load*" propagation="REQUIRED" read-only="true"></tx:method>
+            <tx:method name="resgister*" propagation="REQUIRED"></tx:method>
+            <!-- 抛去上面的方法，剩下所有的方法事务管理 -->
+            <!--<tx:method name="*" read-only="true"></tx:method>-->
+        </tx:attributes>
+    </tx:advice>
+
+    <!--&lt;!&ndash; 配置AOP &ndash;&gt;-->
+    <aop:config>
+        <aop:pointcut id="pc" expression="execution(* com.ishopmall.service.*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pc"></aop:advisor>
+    </aop:config>
+</beans>

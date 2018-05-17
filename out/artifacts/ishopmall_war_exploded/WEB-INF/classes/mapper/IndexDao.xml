@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为UserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.ishopmall.dao.IndexDao">
+    <resultMap id="shopItemlist" type="ItemCat">
+        <id column="id" property="Id"></id>
+        <result column="parent_id" property="parentId"></result>
+        <result column="name" property="name"></result>
+        <result column="status" property="status"></result>
+        <association property="parentItemCat" javaType="ItemCat">
+            <id column="p_id" property="Id"></id>
+            <result column="p_name" property="name"/>
+            <result column="status" property="status"></result>
+        </association>
+    </resultMap>
+    <select id="shopItem_list" resultMap="shopItemlist">
+        select * from tb_item_cat d
+        left join
+        (select id p_id,name p_name from tb_item_cat) p
+        on d.parent_id=p.p_id;
+    </select>
+    <resultMap id="selectNoticeTitle" type="MallNotice" autoMapping="true">
+        <id column="notice_id" property="noticeId"></id>
+        <result column="notice_type" property="noticeType"></result>
+        <result column="notice_state" property="noticeState"></result>
+        <result column="notice_title" property="noticeTitle"></result>
+        <result column="notice_write" property="noticeWrite"></result>
+    </resultMap>
+    <select id="selectNoticeTitle" resultMap="selectNoticeTitle">
+        SELECT * FROM tb_mall_notice WHERE notice_state=1 ORDER BY notice_time DESC LIMIT 0,6;
+    </select>
+    <select id="selectSinglecategory" resultMap="shopItemlist">
+        SELECT id,name from tb_item_cat where parent_id=#{id} LIMIT 0,5
+    </select>
+    <select id="selectshopItemParent" resultMap="shopItemlist">
+        select id,name,status from tb_item_cat where parent_id=0 LIMIT 0,16
+    </select>
+    <!-- 查询广告地址 -->
+    <select id="findNoticeWriteById" resultMap="selectNoticeTitle">
+    	SELECT * FROM tb_mall_notice WHERE notice_id=#{noticeId}
+    </select>
+    <select id="getCount" resultType="Integer">
+    	select count(*) from tb_mall_notice
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ishopmall.dao.CommentDao">
+   <resultMap id="ProductComment" type="ProductComment">
+       <id column="id" property="id"></id>
+       <result column="prod_id" property="prodId"></result>
+       <result column="user_id" property="userId"></result>
+       <result column="content" property="content"></result>
+       <result column="status" property="status"></result>
+       <result column="content_time" property="contentTime"></result>
+       <result column="evaluation" property="evaluation"></result>
+   </resultMap>
+    <select id="selectCommentInfo" resultMap="ProductComment">
+        SELECT * FROM tb_prods_comment WHERE prod_id=#{prodId} ORDER BY content_time DESC
+    </select>
+    <select id="selectCommentCount" resultType="Integer">
+        select count(*) from tb_prods_comment where prod_id=#{prodId}
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为UserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.ishopmall.dao.UserCommentDao">
+    <!-- 封装User对象-->
+    <resultMap id="findAllRM" type="com.ishopmall.model.UserComment" autoMapping="true">
+        <id column="comment_id" property="commentId"></id>
+        <result column="content_time" property="contentTime"></result>
+        <result column="prod_id" property="prodId"></result>
+        <association property="prodsInfo" javaType="ProdsInfo">
+        	<id column="id" property="id"/>
+			<result column="name" property="name"></result>
+			<result column="imgurl" property="imgurl"></result>
+        </association>
+    </resultMap>
+   	<select id="findAll" resultMap="findAllRM">
+	SELECT c.comment_id,c.prod_id,c.user_id,c.content,c.status,c.content_time,c.evaluation,p.name,p.imgurl FROM 
+		tb_prods_comment c 
+			LEFT JOIN
+		tb_prods_info p
+			ON c.prod_id = p.id
+		where c.user_id=#{userId}
+   	</select>
+</mapper>

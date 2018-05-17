@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为UserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.ishopmall.dao.UserDao">
+    <!-- 封装User对象-->
+    <resultMap id="User" type="com.ishopmall.model.User">
+        <id column="user_id" property="userId"></id>
+        <result column="user_name" property="userName"></result>
+        <result column="user_password" property="userPassword"></result>
+        <result column="user_telphone" property="userTelphone"></result>
+        <result column="user_email" property="userEmail"></result>
+    </resultMap>
+    <!--  封装UserUserInfo用户对象用于登录 -->
+    <resultMap id="UserLogin" type="com.ishopmall.model.User">
+        <id column="user_id" property="userId"></id>
+        <result column="user_name" property="userName"></result>
+        <result column="user_password" property="userPassword"></result>
+        <result column="user_telphone" property="userTelphone"></result>
+        <result column="user_email" property="userEmail"></result>
+        <association property="userInfo" javaType="UserInfo">
+            <id column="user_id" property="userId"></id>
+            <result column="user_gender" property="userGender"></result>
+            <result column="user_birthday" property="userBirthday"></result>
+            <result column="user_photopath" property="userPhotopath"></result>
+            <result column="user_status" property="userStatus"></result>
+            <result column="user_permissions" property="userPermissions"></result>
+            <result column="user_code" property="userCode"></result>
+            <result column="user_regtime" property="userRegtime"></result>
+            <result column="user_money" property="userMoney"></result>
+        </association>
+         <collection property="userAddress" ofType="UserAddress">
+        	<id column="address_id" property="addressId"></id>
+            <result column="user_id" property="userId"></result>
+            <result column="user_receiver" property="userReceiver"></result>
+            <result column="user_phone" property="userPhone"></result>
+      		<result column="user_province" property="userProvince"></result>
+	        <result column="user_city" property="userCity"></result>
+	        <result column="user_district" property="userDistrict"></result>
+            <result column="user_address" property="userAddress"></result>
+            <result column="address_status" property="addressStatus"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 封装用户附表UserInfo对象 -->
+    <resultMap id="UserInfo" type="com.ishopmall.model.UserInfo">
+        <id column="user_id" property="userId"></id>
+        <result column="user_gender" property="userGender"></result>
+        <result column="user_birthday" property="userBirthday"></result>
+        <result column="user_photopath" property="userPhotopath"></result>
+        <result column="user_status" property="userStatus"></result>
+        <result column="user_permissions" property="userPermissions"></result>
+        <result column="user_code" property="userCode"></result>
+        <result column="user_regtime" property="userRegtime"></result>
+        <result column="user_money" property="userMoney"></result>
+    </resultMap>
+
+    <!-- 封装用户地址UserAddress对象 -->
+    <resultMap id="UserAddress" type="com.ishopmall.model.UserAddress">
+        <id column="address_id" property="addressId"></id>
+        <result column="user_id" property="userId"></result>
+        <result column="user_receiver" property="userReceiver"></result>
+        <result column="user_phone" property="userPhone"></result>
+        <result column="user_province" property="userProvince"></result>
+        <result column="user_city" property="userCity"></result>
+        <result column="user_district" property="userDistrict"></result>
+        <result column="user_address" property="userAddress"></result>
+        <result column="address_status" property="addressStatus"></result>
+    </resultMap>
+
+    <select id="selectUser" resultMap="User">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+    <insert id="saveUser">
+        INSERT INTO USER VALUES (#{userId} ,#{userName},#{userPassword},#{userTelphone},#{userEmail})
+    </insert>
+    <insert id="saveUserInfo">
+        INSERT INTO user_info VALUES (#{userId},#{userGender},#{userBirthday} ,#{userPhotopath},#{userStatus},#{userPermissions},#{userCode},#{userRegtime,jdbcType=TIMESTAMP}
+        ,#{userMoney}
+        )
+    </insert>
+    <select id="selectUserInfo" resultMap="UserInfo">
+        SELECT * FROM user_info WHERE user_id = #{userId}
+    </select>
+    <select id="selectUserInfo_inv" resultMap="UserInfo">
+        SELECT user_id,user_status,user_code,user_regtime FROM user_info WHERE user_id=#{userId}
+    </select>
+    <update id="updateUserInfo_status">
+        UPDATE user_info SET user_status=1 WHERE user_id=#{userId}
+    </update>
+
+    <!-- 用户登录，仅查询用户基础信息和关联信息，不查询购物车，地址等信息，节省内存，加快查询速度 -->
+    <!-- 没地址 -->
+    <select id="selectUserLogin" resultMap="UserLogin">
+        SELECT * FROM USER u,user_info i where i.user_id=u.user_id 
+        and u.user_id=(
+        SELECT user_id from user
+        <where>
+            <if test="userTelphone!=null">user_telphone=#{userTelphone}</if>
+            <if test="userEmail!=null"> and user_email=#{userEmail}</if>
+        </where>
+        );
+    </select>
+    <!-- 有地址 -->
+    <select id="selectUserLogin2" resultMap="UserLogin">
+        SELECT * FROM USER u,user_info i,user_address a where i.user_id=u.user_id and a.user_id=u.user_id
+        and u.user_id=(
+        SELECT user_id from user
+        <where>
+            <if test="userTelphone!=null">user_telphone=#{userTelphone}</if>
+            <if test="userEmail!=null"> and user_email=#{userEmail}</if>
+        </where>
+        );
+    </select>
+    
+    <!-- 没地址 -->
+    <select id="UserLoginByOne" resultMap="UserLogin">
+        SELECT * FROM USER u,user_info i where i.user_id=u.user_id
+        and u.user_id=(
+        SELECT user_id from user
+        <where>
+            <if test="userTelphone!=null">user_telphone=#{userTelphone}</if>
+            <if test="userEmail!=null"> and user_email=#{userEmail}</if>
+        </where>
+        );
+    </select>
+    <!-- 有地址 -->
+    <select id="UserLoginByOne2" resultMap="UserLogin">
+        SELECT * FROM USER u,user_info i,user_address a where i.user_id=u.user_id and a.user_id=u.user_id
+        and u.user_id=(
+        SELECT user_id from user
+        <where>
+            <if test="userTelphone!=null">user_telphone=#{userTelphone}</if>
+            <if test="userEmail!=null"> and user_email=#{userEmail}</if>
+        </where>
+        );
+    </select>
+
+    <!--  用于个人中心更新邮箱（添加，修改） -->
+    <update id="updateUserInfo_Code">
+        UPDATE user_info SET user_code=#{userCode} WHERE user_id=#{userId}
+    </update>
+    <update id="upadateUser_Email">
+        UPDATE user SET user_email=#{userEmail} WHERE user_id=#{userId}
+    </update>
+    <!-- 用于个人中心更新手机号码（新增、修改） -->
+    <update id="updateUser_Phone">
+        UPDATE USER
+        SET
+        user_telphone=#{userTelphone}
+        WHERE user_id=#{userId}
+    </update>
+    
+    <!-- 用于个人中心查询该用户的所有地址 -->
+    <select id="findAddress" resultMap="UserAddress">
+    	select * from user_address where user_id=#{userId}
+    </select>
+    
+    <!-- 用于个人中心添加用户地址 -->
+    <insert id="addAddress">
+    	insert into user_address (user_id,user_receiver,user_phone,user_province,user_city,user_district,user_address,address_status) 
+    	values
+    	(#{userId},#{userReceiver},#{userPhone},#{userProvince},#{userCity},#{userDistrict},#{userAddress},0)
+    </insert>
+    
+    <!-- 用于个人中心修改用户地址为默认地址 -->
+    <update id="changeDefaultStatus">
+    	update user_address 
+    	set address_status=#{status} 
+    	where address_id=#{addressId} and user_id=#{userId}
+    </update>
+    
+    <!-- 用于个人中心修改该用户的其余地址为不默认 -->
+    <update id="changeNoDefaultStatus">
+    	update user_address 
+    	set address_status=#{status}
+    	where address_id != #{addressId} and user_id=#{userId}
+    </update>
+    
+    <!-- 用于个人中心删除该用户所选的地址 -->
+    <delete id="deleteAddress">
+    	delete from user_address where address_id=#{addressId} and user_id=#{userId};	
+    </delete>
+    
+    <!-- 用于个人中心编辑该用户的地址信息（回显地址数据） -->
+    <select id="findAddressByOne" resultMap="UserAddress">
+    	select * from user_address where address_id=#{addressId} and user_id=#{userId}
+    </select>
+    
+    <!-- 用于个人中心编辑该用户的地址信息（修改该地址数据） -->
+    <update id="updateAddress">
+    	update user_address
+    	set user_receiver=#{userReceiver},user_phone=#{userPhone},user_province=#{userProvince},user_city=#{userCity},user_district=#{userDistrict},user_address=#{userAddress},address_status=#{addressStatus} 
+    	where address_id=#{addressId} and user_id=#{userId}
+    </update>
+    
+    <!-- 查找该用户的默认地址 -->
+    <select id="findAddressDefaultStatus" resultMap="UserAddress">
+    	select * from user_address where user_id=#{userId} and address_status=#{status}
+    </select>
+    
+    <!-- 用户个人中心更新用户名 -->
+    <update id="updateUserInformation">
+    	update user set user_name=#{userName} where user_id=#{userId}
+    </update>
+     <!-- 用户个人中心更新性别和生日 -->
+    <update id="updateUserInfoInformation">
+    	update user_info set user_gender=#{userInfo.userGender},user_birthday=#{userInfo.userBirthday} where user_id=#{userId}
+    </update>
+    <select id="findByUserId" resultMap="UserLogin">
+    	SELECT u.user_id,user_name,user_password,user_telphone,user_email,user_gender,user_birthday,user_photopath,user_status,user_permissions,user_code,user_regtime,user_money FROM 
+	USER u 
+		LEFT JOIN
+	user_info ui
+	ON u.user_id=ui.user_id WHERE u.user_id=#{useId}
+    </select>
+    <!-- 查询账户余额 -->
+    <select id="findMoney" resultMap="UserInfo">
+    	SELECT * FROM user_info WHERE user_id=#{userId}
+    </select>
+</mapper>

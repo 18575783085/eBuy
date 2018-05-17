@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ishopmall.dao.ShopCartDao">
+   <resultMap id="ShopCart" type="ShopCart">
+       <id column="user_id" property="userId"></id>
+       <result column="cart_id" property="cartId"></result>
+       <result column="prod_id" property="prodId"></result>
+       <result column="user_id" property="userId"></result>
+       <result column="prod_num" property="prodNum"></result>
+       <result column="created" property="created"></result>
+       <result column="updated" property="updated"></result>
+   </resultMap>
+    <select id="selectShopCart" resultMap="ShopCart">
+        SELECT * FROM tb_shop_cart WHERE user_id=#{id}
+    </select>
+    <delete id="deleteShopCart">
+        DELETE FROM tb_shop_cart WHERE cart_id=#{cartId}
+    </delete>
+    <update id="updateShopCart">
+        UPDATE tb_shop_cart SET prod_num = #{buyNum} WHERE cart_id=#{cardId}
+    </update>
+    <delete id="deleteSelectShopCart">
+        DELETE FROM tb_shop_cart WHERE cart_id IN
+        <foreach collection="array" item="cardIds" open="(" close=")" separator=",">
+            #{cardIds}
+        </foreach>
+    </delete>
+    <select id="selectShopCartExist" resultType="Integer">
+        select cart_id from tb_shop_cart where prod_id=#{prodId} and user_id=#{userId}
+    </select>
+    <insert id="insertShopCart" parameterType="ShopCart">
+        INSERT INTO tb_shop_cart (user_id,prod_id,prod_num,created,updated) VALUES (#{userId},#{prodId},#{prodNum},#{created},#{updated})
+    </insert>
+    <select id="selectShopCartProdNum" resultType="Integer">
+        select prod_num from tb_shop_cart where cart_id=#{cartId}
+    </select>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- shiro安全框架：用于过滤用户登录 -->
+
+    <!-- 安全管理器 -->
+    <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="defaultWebSecurityManager">
+        <property name="realm" ref="authRealm"></property>
+    </bean>
+
+    <bean class="com.ishopmall.shiro.UserAuthRealm" id="authRealm">
+        <property name="credentialsMatcher" ref="authCreadentialMatcher"></property>
+    </bean>
+
+    <bean class="com.ishopmall.shiro.UserAuthCreadentialMatcher" id="authCreadentialMatcher">
+
+    </bean>
+
+    <!--  -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor" id="attributeSourceAdvisor">
+        <property name="securityManager" ref="defaultWebSecurityManager"></property>
+    </bean>
+
+    <!-- 过滤工厂 -->
+    <bean class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" id="UserShirofilter">
+        <property name="securityManager" ref="defaultWebSecurityManager"></property>
+        <!-- 设置登录地址：当用户没有登录访问不允许操作 -->
+        <property name="loginUrl" value="/userlogin"></property>
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- anon:放行 authc：拦截 -->
+
+                <!-- 拦截所有个人中心请求 -->
+                /usercenter/*=authc
+                <!-- 放行所有静态资源文件，指定文件夹 -->
+                /AmazeUI-2.4.2/**=anon
+                /basic/**=anon
+                /css/**=anon
+                /images/**=anon
+                /js/**=anon
+                <!-- /*:拦截所有请求 /**:拦截所有请求和所有静态文件 -->
+            </value>
+        </property>
+    </bean>
+</beans>

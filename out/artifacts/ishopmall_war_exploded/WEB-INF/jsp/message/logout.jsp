@@ -1,0 +1,61 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/11/10
+  Time: 18:42
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="refresh" content="3;url=${appPath}/home">
+    <title>退出登录</title>
+    <link href="${appPath}/AmazeUI-2.4.2/assets/css/admin.css" rel="stylesheet" type="text/css">
+    <link href="${appPath}/AmazeUI-2.4.2/assets/css/amazeui.css" rel="stylesheet" type="text/css">
+
+    <link href="${appPath}/css/personal.css" rel="stylesheet" type="text/css">
+    <link href="${appPath}/css/stepstyle.css" rel="stylesheet" type="text/css">
+
+    <script src="${appPath}/AmazeUI-2.4.2/assets/js/jquery.min.js" type="text/javascript"></script>
+    <script src="${appPath}/AmazeUI-2.4.2/assets/js/amazeui.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+<!--头 -->
+<header>
+    <article>
+        <div class="mt-logo">
+        <%@include file="../../../_head.jsp"%>
+
+<div class="center">
+    <div class="col-main">
+        <div>
+
+            <div class="am-cf am-padding">
+                <div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">注销</strong> / <small>你已成功退出</small></div>
+            </div>
+            <hr/>
+
+            <div style="text-align:center">
+                    <div style="font-size:20px;line-height:100px">你已经成功注销</div>
+                    <div style="font-size:20px;line-height:100px">3秒后即将跳转回首页...</div>
+                    <div style="font-size:20px;line-height:100px">没有反应？点击
+                    <a href="${appPath}/home">
+                      <input value="这里" class="am-btn am-btn-primary am-round" style="width: 60px"/>
+                    </a>跳转</div>
+            </div>
+        </div>
+        <!--底部-->
+        <%@include file="../../../_foot.jsp"%>
+    </div>
+</div>
+
+</body>
+
+</html>
