@@ -58,7 +58,7 @@
 							<div class="u-progress-bar-inner"></div>
 						</div>
 					</div>
-					<form class="am-form am-form-horizontal" action="${appPath}/usercenter/SendEmail.do">
+					<form class="am-form am-form-horizontal" action="${appPath}/usercenter/AddEmail.do">
 						<div class="am-form-group">
 							<label for="userEmail" class="am-form-label"><c:if test="${sessionScope.User.userEmail==null}">绑定</c:if>邮箱</label>
 							<div class="am-form-content">

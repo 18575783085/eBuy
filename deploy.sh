@@ -4,10 +4,10 @@ ACTION=$1
 ONLINE_OFFLINE_WAIT_TIME=6  # 实例上下线的等待时间
 APP_START_TIMEOUT=50     # 等待应用启动的时间
 APP_PORT=8080          # 应用端口
-HEALTH_CHECK_URL=http://127.0.0.1:${APP_PORT}/ishopmall  # 应用健康检查URL
+HEALTH_CHECK_URL=http://127.0.0.1:${APP_PORT}/eBuy  # 应用健康检查URL
 HEALTH_CHECK_FILE_DIR=/home/admin/status   # 脚本会在这个目录下生成nginx-status文件
-APP_HOME=/home/admin/ishopmall  # 从package.tgz中解压出来的jar包放到这个目录下
-WAR_NAME=ishopmall.war # jar包的名字
+APP_HOME=/home/admin/eBuy  # 从package.tgz中解压出来的jar包放到这个目录下
+WAR_NAME=eBuy.war # jar包的名字
 APP_LOG=${APP_HOME}/logs/app.log # 应用的日志文件
 # 创建出相关目录
 mkdir -p ${HEALTH_CHECK_FILE_DIR}  

@@ -123,15 +123,24 @@
 								</div>
 								<div class="verification">
 									<label class="lab" for="code"><i class="am-icon-code-fork"></i>
-									</label> <input class="inp" type="tel" name="smsvalistr" id="code" placeholder="请输入短信验证码"
+									</label>
+
+									<input class="inp" type="tel" name="valistr" id="code" placeholder="请输入图片验证码"
+													value="" maxlength="4" title="请输入4位验证码" required onblur="checkValistr2()"
+								>
+									<img src="${appPath}/register/ValiImage.do" alt="加载失败" width="85px" height="39px" id="verification2" title="看不清点击刷新验证码"
+										 onclick="refreshCode(this)" />
+									<span id="val_msg2"></span>
+
+									<%--<input class="inp" type="tel" name="smsvalistr" id="code" placeholder="请输入短信验证码"
 											value="${param.smsvalistr }" onblur="CheckSmsCode()" maxlength="6" title="请输入6位验证码" required 
 											>
-									<input class="am-btn am-btn-secondary btn-loading-example " type="button" value="获取" id="sendMobileCode"/>
+									<input class="am-btn am-btn-secondary btn-loading-example " type="button" value="获取" id="sendMobileCode"/>--%>
 									<!-- <a class="btn" href="javascript:void(0);"
 										onclick="sendMobileCode();" id="sendMobileCode"> <span
 										id="dyMobileButton">获取</span>
-									</a> -->
-									<span id="sms_msg"></span>
+									</a>
+									<span id="sms_msg"></span>-->
 								</div>
 								<div class="user-pass">
 									<label class="lab" for="password2"><i class="am-icon-lock"></i>
@@ -264,9 +273,44 @@ function enable2()
 			    }
 		     }
 	     });
-		
-		
 	}
+
+    function checkValistr2(){
+        //获取图片验证码输入框参数
+        var inputCode = $("#code").val().trim();
+
+        //判断是否为空
+        if(inputCode == ""){
+            $("#val_msg2").html("<font color='red'>× 图片验证码不能为空</font>");
+            return;
+        }
+
+        //校验图片验证码
+        $.ajax({
+            type:"POST",//用post方式传输
+            dataType:"text",//数据格式：json
+            url:"${appPath}/register/checkCode.do",//目标地址
+            data:{"valistr":inputCode},
+            success:function (data){
+                data = parseInt(data,10);
+                if(data == 1){
+                    $("#val_msg2").html("<font color='#339933'>√ 验证码正确</font>");
+                    $("#reader-me").removeAttr("disabled");
+                    $("label[for='reader-me']").css("cursor","pointer");
+                }else if(data == 0){
+                    $("#val_msg2").html("<font color='red'>× 验证码不正确,请重新获取</font>");
+                    $("#reader-me").attr("disabled",true);
+                    $("label[for='reader-me']").css("cursor","not-allowed");
+                }else if(data == 2){
+                    $("#val_msg2").html("<font color='red'>× 验证码已失效，请重新获取验证码</font>");
+                    $("#reader-me").attr("disabled",true);
+                    $("label[for='reader-me']").css("cursor","not-allowed");
+                }
+            }
+        });
+
+
+    }
 </script>
 
 <!-- 手机注册的ajax -->
@@ -320,7 +364,12 @@ function enable2()
 
 </script>
 
-<script>
+
+
+
+
+
+<script>/*不要*/
 		/* Ajax发送验证码 ,并且带防刷新验证码页面*/
 	  $(function(){
         /*防刷新：检测是否存在cookie*/
@@ -393,7 +442,7 @@ function enable2()
    	});
 </script>
 
-<script>
+<script>/*不要*/
 	/* 校验短信验证码 */
 	function CheckSmsCode(){
 		//获取短信验证码参数

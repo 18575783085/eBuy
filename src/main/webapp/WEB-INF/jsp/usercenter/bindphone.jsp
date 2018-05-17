@@ -82,7 +82,7 @@
 								<span id="user-phone" >${sessionScope.User.userTelphone}</span>
 							</div>
 						</div>
-						<div class="am-form-group code">
+						<%--<div class="am-form-group code">
 							<label for="user-code" class="am-form-label">验证码</label>
 							<div class="am-form-content">
 								<input type="tel" id="user-code" placeholder="请输入短信验证码，进行校验原手机号码" name="smsvalistr" 
@@ -90,7 +90,7 @@
 								<span></span>
 							</div>
 							<input class="am-btn am-btn-danger" type="button" value="验证码" id="sendMobileCode"/>
-						</div>
+						</div>--%>
 					</c:if>
 						
 						<div class="am-form-group">
@@ -104,16 +104,21 @@
 						<div class="am-form-group code">
 							<label for="user-new-code" class="am-form-label">验证码</label>
 							<div class="am-form-content">
-								<input type="tel" id="user-new-code" placeholder="请输入短信验证码" name="smsvalistr2" 
-									    onblur="CheckSmsCode2()"  maxlength="6" title="请输入6位验证码" required >
-								<span></span>
+								<%--<input type="tel" id="user-new-code" placeholder="请输入短信验证码" name="smsvalistr2"
+									    onblur="CheckSmsCode2()"  maxlength="6" title="请输入6位验证码" required >--%>
+								<input class="inp" type="tel" name="valistr" id="code" placeholder="请输入图片验证码"
+									   value="" maxlength="4" title="请输入4位验证码" required onblur="checkValistr2()"
+								>
+								<span id="val_msg2"></span>
 							</div>
-							<c:if test="${sessionScope.User.userTelphone != null }">
+							<img src="${appPath}/register/ValiImage.do" alt="加载失败" width="85px" height="30px" id="verification" title="看不清点击刷新验证码"
+								 onclick="refreshCode(this)" />
+							<%--<c:if test="${sessionScope.User.userTelphone != null }">
 								<input class="am-btn am-btn-danger" type="button" value="验证码" id="sendMobileCode2" disabled="disabled" />
 							</c:if>
 							<c:if test="${sessionScope.User.userTelphone == null }">
 								<input class="am-btn am-btn-danger" type="button" value="验证码" id="sendMobileCode3" />
-							</c:if>
+							</c:if>--%>
 						</div>
 						<div class="info-btn">
 							<!-- <div class="am-btn am-btn-danger">保存修改</div> -->
@@ -143,7 +148,44 @@
 <!-- ↑引入右侧菜单栏 -->
 	</body>
 
+<script type="text/javascript">
+	/* 点击图片刷新验证码 */
+	function refreshCode(thisobj){
+		thisobj.src = "${appPath}/register/ValiImage.do?ye="+new Date().getTime();
+	}
+</script>
+	<script>
+        function checkValistr2(){
+            //获取图片验证码输入框参数
+            var inputCode = $("#code").val().trim();
 
+            //判断是否为空
+            if(inputCode == ""){
+                $("#val_msg2").html("<font color='red'>× 图片验证码不能为空</font>");
+                return;
+            }
+
+            //校验图片验证码
+            $.ajax({
+                type:"POST",//用post方式传输
+                dataType:"text",//数据格式：json
+                url:"${appPath}/register/checkCode.do",//目标地址
+                data:{"valistr":inputCode},
+                success:function (data){
+                    data = parseInt(data,10);
+                    if(data == 1){
+                        $("#val_msg2").html("<font color='#339933'>√ 验证码正确</font>");
+                    }else if(data == 0){
+                        $("#val_msg2").html("<font color='red'>× 验证码不正确,请重新获取</font>");
+                    }else if(data == 2){
+                        $("#val_msg2").html("<font color='red'>× 验证码已失效，请重新获取验证码</font>");
+                    }
+                }
+            });
+
+
+        }
+	</script>
 <!-- 校验新手机号码是否已经存在 -->
 <script type="text/javascript">
 	/* Ajax检验手机号码是否已经存在 */
@@ -180,6 +222,7 @@
 
 </script>
 
+	<%--不要【下面的js暂不可用】--%>
 <!-- 旧手机的短信按钮事件
 	思路：userTelphone的Session存在，这个按钮才出现，否则被隐藏！
 		还有，无论用户是否按顺序输入，只要按钮出现了，都能发送短信 -->

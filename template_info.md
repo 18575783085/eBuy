@@ -20,7 +20,7 @@
 * 了解更多关于release文件的编写方式: 了解更多关于release文件的编写方式 
 * [NEWLINE][NEWLINE]#: [NEWLINE][NEWLINE]# 
 * 构建源码语言类型[NEWLINE]code.language: oracle-jdk1.8[NEWLINE][NEWLINE]# 
-* 构建打包使用的打包文件[NEWLINE]build.output: target/ishopmall.war[NEWLINE][NEWLINE]# 
+* 构建打包使用的打包文件[NEWLINE]build.output: target/eBuy.war[NEWLINE][NEWLINE]# 
 * 应用部署脚本[NEWLINE]deploy.appctl.path: deploy.sh" 
 
 ### 上下文参数

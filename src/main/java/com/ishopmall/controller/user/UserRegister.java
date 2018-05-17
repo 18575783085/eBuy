@@ -129,17 +129,23 @@ public class UserRegister {
         //数据合法性检验
         boolean res = userService.resgisterUser(user, userInfo);
         if (res) {
-            //把用户基础信息保存到隐藏域
-            model.addAttribute("emailAddress", email);
-            model.addAttribute("useruid", user.getUserId());
-            model.addAttribute("code", userInfo.getUserCode());
-            return "message/ConfirmEmail";
+//            //把用户基础信息保存到隐藏域
+//            model.addAttribute("emailAddress", email);
+//            model.addAttribute("useruid", user.getUserId());
+//            model.addAttribute("code", userInfo.getUserCode());
+//            return "message/ConfirmEmail";
+			//true:注册成功
+			List<User> userinfo = userService.selectUserLogin(user);
+			User userLogin= userinfo.get(0);
+			//添加用户信息自动登录session
+			model.addAttribute("User", userLogin);
+			return "message/SucRegister";
         }
         model.addAttribute("checkError", "你注册用户已存在，请勿重复注册");
         return "message/ErrorRegister";
     }
 
-    /**
+    /**（不要）
      * 用户点击重新发送邮件
      *
      * @param email  隐藏域邮件地址
@@ -160,7 +166,7 @@ public class UserRegister {
         return "message/ConfirmEmail";
     }
 
-    /**
+    /**（不要）
      * 用于验证用户邮件是否真实存在
      *
      * @param userid         用户id
@@ -221,17 +227,17 @@ public class UserRegister {
 				//跳转到错误页面
 				return "message/ErrorRegister";
 			}
-			//防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
-			//获取用户输入的短信验证码
-			String smsvalistr = request.getParameter("smsvalistr");
-			//获取session存储的短信验证码
-			String smscode = (String) request.getSession().getAttribute("smscode");
-			//判断短信验证码是否匹配
-			if(!smscode.equals(smsvalistr)){
-				model.addAttribute("checkError", "短信验证码输入不一致");
-				//跳转到错误页面
-				return "message/ErrorRegister";
-			}
+//			//防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
+//			//获取用户输入的短信验证码
+//			String smsvalistr = request.getParameter("smsvalistr");
+//			//获取session存储的短信验证码
+//			String smscode = (String) request.getSession().getAttribute("smscode");
+//			//判断短信验证码是否匹配
+//			if(!smscode.equals(smsvalistr)){
+//				model.addAttribute("checkError", "短信验证码输入不一致");
+//				//跳转到错误页面
+//				return "message/ErrorRegister";
+//			}
 			//数据非空校验
 			user.checkFormat();
 		} catch (RegisterException e) {
@@ -253,14 +259,13 @@ public class UserRegister {
 		String md5 = MD5Utils.md5(user.getUserPassword());
 		user.setUserPassword(md5);
 
-		//获取session中发送短信后的手机号码（checkSmsCode）
-		String smsphone = (String) request.getSession().getAttribute("smsphone");
-
-		//进行判断
-		if(!smsphone.equals(user.getUserTelphone())){//手机号码前后不一致
-			model.addAttribute("checkError", "× 该手机号码不是原来的号码，请重新获取验证码！");
-			return "message/ErrorRegister";
-		}
+//		//获取session中发送短信后的手机号码（checkSmsCode）
+//		String smsphone = (String) request.getSession().getAttribute("smsphone");
+//		//进行判断
+//		if(!smsphone.equals(user.getUserTelphone())){//手机号码前后不一致
+//			model.addAttribute("checkError", "× 该手机号码不是原来的号码，请重新获取验证码！");
+//			return "message/ErrorRegister";
+//		}
 
 		//数据合法性检验
 		//判断用户手机注册
@@ -280,7 +285,11 @@ public class UserRegister {
 	}
 
 
-	/**
+
+
+
+
+	/**（不要）
 	 * 使用Ajax校验注册用户手机号码是否存在
 	 * @param user 用户注册信息
 	 * @param response
@@ -307,7 +316,7 @@ public class UserRegister {
 	}
 
 
-	/**
+	/**（不要）
 	 * 使用Ajax发送手机短信
 	 * @param user
 	 * @param request
@@ -435,7 +444,7 @@ public class UserRegister {
 	}
 
 
-	/**
+	/**（不要）
 	 * 实现功能：光标移走校验短信验证码
 	 * @param request
 	 * @param response

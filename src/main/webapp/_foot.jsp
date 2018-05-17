@@ -30,7 +30,7 @@
 			<a href="https://github.com/czy006/">合作伙伴</a>
 			<a href="https://github.com/czy006/">联系我们</a>
 			<a href="https://github.com/czy006/">网站地图</a>
-			<em>© 2015-2025 ishopmall 版权所有</em>
+			<em>© 2015-2025 eBuy二手交易平台 版权所有</em>
 		</p>
 	</div>
 </div>

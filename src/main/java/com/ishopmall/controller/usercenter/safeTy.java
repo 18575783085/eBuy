@@ -134,41 +134,99 @@ public class safeTy {
     }
 
     /**
+     * 直接添加或修改邮箱
+     * @param email
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping("/AddEmail.do")
+    public String addEmail(String userEmail,HttpSession session, Model model){
+        //判断用户输入邮箱格式和是否为空
+        if (JudgeTools.isNull(userEmail)) {
+            return "errorSend";
+        }
+        if (!JudgeTools.checkEmail(userEmail)) {
+            return "errorSend";
+        }
+        User user = new User();
+        //获取现在User对象里面的信息，包括UserInfo信息
+        User nowUser = (User) session.getAttribute("User");
+        //非空判断
+        if (nowUser==null){
+            model.addAttribute("msg", "请登入后再操作");
+            return "message/statuSend";
+        }
+        //现在User对象里面的邮箱地址和code
+        String nowUserEmail = nowUser.getUserEmail();
+        UserInfo nowUserUserInfo = nowUser.getUserInfo();
+        String nowUserCode = nowUserUserInfo.getUserCode();
+        if(nowUserCode!=null){
+            List<UserInfo> infos = userService.selectUserInfo(nowUserUserInfo);
+            nowUserUserInfo=infos.get(0);
+        }
+        //非空和合法性检验
+        if (nowUser == null) {
+            model.addAttribute("msg", "验证失败");
+            return "message/statuSend";
+        }
+        user.setUserId(nowUser.getUserId());
+        user.setUserEmail(userEmail);
+        int result = userService.upadateUser_Email(user);
+        if (result > 0) {
+            //设置传入进来的邮箱
+            nowUser.setUserEmail(userEmail);
+            //验证正确,执行更新用户邮箱操作
+            model.addAttribute("msg", "验证成功，你的邮箱已添加");
+            model.addAttribute("User", nowUser);
+            return "message/statuSend";
+        }
+        //验证失败，返回至验证失败页面，并且把原来邮箱状态重新写回数据库
+        model.addAttribute("msg", "验证失败");
+        user.setUserEmail(nowUserEmail);
+        nowUser.setUserEmail(nowUserEmail);
+        userService.upadateUser_Email(user);
+        model.addAttribute("User", nowUser);
+        return "message/statuSend";
+    }
+
+
+    /**
      * 绑定新手机号码
      *
      * @param newPhone 新手机号码
      * @param smsvalistr2 新手机号码的短信验证码
      */
     @RequestMapping("/addPhone.do")
-    public String addPhone(String newPhone, String smsvalistr2, HttpServletRequest request, Model model){
+    public String addPhone(String newPhone,HttpServletRequest request, Model model){
         //非空校验
         if (JudgeTools.isNull(newPhone)) {
             model.addAttribute("checkError", "请输入要绑定手机号码");
             //跳转到错误页面
             return "message/statuPhone";
         }
-        if (JudgeTools.isNull(smsvalistr2)) {
-            model.addAttribute("checkError", "请输入短信验证码");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
-        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
-        //获取session存储的短信验证码
-        String smscode2 = (String) request.getSession().getAttribute("smscode2");
-        //判断短信验证码是否匹配
-        if(!smscode2.equals(smsvalistr2)){
-            model.addAttribute("checkError", "短信验证码输入不一致");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
-        //判断“点击保存修改”时，手机号码发送短信后跟点击注册时，该手机号码是否前后一致
-        //获取session中发送短信后的手机号码（checkSmsCode）
-        String smsphone = (String) request.getSession().getAttribute("smsphone2");
-        //进行判断
-        if(!smsphone.equals(newPhone)){//手机号码前后不一致
-            model.addAttribute("checkError", "× 该手机号码不是原来的号码，请重新获取验证码！");
-            return "message/statuPhone";
-        }
+//        if (JudgeTools.isNull(smsvalistr2)) {
+//            model.addAttribute("checkError", "请输入短信验证码");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
+//        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
+//        //获取session存储的短信验证码
+//        String smscode2 = (String) request.getSession().getAttribute("smscode2");
+//        //判断短信验证码是否匹配
+//        if(!smscode2.equals(smsvalistr2)){
+//            model.addAttribute("checkError", "短信验证码输入不一致");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
+//        //判断“点击保存修改”时，手机号码发送短信后跟点击注册时，该手机号码是否前后一致
+//        //获取session中发送短信后的手机号码（checkSmsCode）
+//        String smsphone = (String) request.getSession().getAttribute("smsphone2");
+//        //进行判断
+//        if(!smsphone.equals(newPhone)){//手机号码前后不一致
+//            model.addAttribute("checkError", "× 该手机号码不是原来的号码，请重新填写！");
+//            return "message/statuPhone";
+//        }
         //获取session存储的User对象
         User user = (User) request.getSession().getAttribute("User");
         //TODO 是否需要在后台再一次校验新增手机号码是否存在
@@ -204,58 +262,58 @@ public class safeTy {
      * @return
      */
     @RequestMapping("/updatePhone.do")
-    public String updatePhone(String smsvalistr, String newPhone, String smsvalistr2, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String updatePhone(String newPhone,HttpServletRequest request, HttpServletResponse response, Model model){
         //非空校验
-        //第一个短信验证码框
-        if(JudgeTools.isNull(smsvalistr)){
-            model.addAttribute("checkError", "请输入短信验证码");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
+//        //第一个短信验证码框
+//        if(JudgeTools.isNull(smsvalistr)){
+//            model.addAttribute("checkError", "请输入短信验证码");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
         //新绑定的手机号码
         if(JudgeTools.isNull(newPhone)){
             model.addAttribute("checkError", "请输入要绑定的手机号码");
             //跳转到错误页面
             return "message/statuPhone";
         }
-        //第二个短信验证码框
-        if (JudgeTools.isNull(smsvalistr2)) {
-            model.addAttribute("checkError", "请输入新绑定的手机号码的短信验证码");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
+//        //第二个短信验证码框
+//        if (JudgeTools.isNull(smsvalistr2)) {
+//            model.addAttribute("checkError", "请输入新绑定的手机号码的短信验证码");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
 
-        //对旧手机号码的短信校验
-        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
-        //获取用户输入的短信验证码:smsvalistr
-        //获取session存储的短信验证码
-        String smsCode = (String) request.getSession().getAttribute("smscode");
-        //判断短信验证码是否匹配
-        if(!smsCode.equals(smsvalistr)){
-            model.addAttribute("checkError", "短信验证码输入不一致");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
+//        //对旧手机号码的短信校验
+//        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
+//        //获取用户输入的短信验证码:smsvalistr
+//        //获取session存储的短信验证码
+//        String smsCode = (String) request.getSession().getAttribute("smscode");
+//        //判断短信验证码是否匹配
+//        if(!smsCode.equals(smsvalistr)){
+//            model.addAttribute("checkError", "短信验证码输入不一致");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
+//
+//        //获取session中发送短信后的手机号码（checkSmsCode）
+//        String smsphone2 = (String) request.getSession().getAttribute("smsphone2");
+//        //进行判断
+//        if(!smsphone2.equals(newPhone)){//新绑定的手机号码前后不一致
+//            model.addAttribute("checkError", "× 该手机号码不是原来新绑定的号码，请重新填写！");
+//            return "message/statuPhone";
+//        }
 
-        //获取session中发送短信后的手机号码（checkSmsCode）
-        String smsphone2 = (String) request.getSession().getAttribute("smsphone2");
-        //进行判断
-        if(!smsphone2.equals(newPhone)){//新绑定的手机号码前后不一致
-            model.addAttribute("checkError", "× 该手机号码不是原来新绑定的号码，请重新获取验证码！");
-            return "message/statuPhone";
-        }
-
-        //对新手机号码的短信校验
-        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
-        //获取用户输入的短信验证码:smsvalistr2
-        //获取session存储的第二个短信验证码
-        String smsCode2 = (String) request.getSession().getAttribute("smscode2");
-        //判断短信验证码是否匹配
-        if(!smsCode2.equals(smsvalistr2)){
-            model.addAttribute("checkError", "第二个短信验证码输入不一致");
-            //跳转到错误页面
-            return "message/statuPhone";
-        }
+//        //对新手机号码的短信校验
+//        //防止浏览器禁止Ajax，在这里再判断一次短信验证码校验
+//        //获取用户输入的短信验证码:smsvalistr2
+//        //获取session存储的第二个短信验证码
+//        String smsCode2 = (String) request.getSession().getAttribute("smscode2");
+//        //判断短信验证码是否匹配
+//        if(!smsCode2.equals(smsvalistr2)){
+//            model.addAttribute("checkError", "第二个短信验证码输入不一致");
+//            //跳转到错误页面
+//            return "message/statuPhone";
+//        }
 
         //获取存储在session中的User对象
         User user = (User) request.getSession().getAttribute("User");

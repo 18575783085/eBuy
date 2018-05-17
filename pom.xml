@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ishopmall</groupId>
-  <artifactId>ishopmall</artifactId>
+  <artifactId>eBuy</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>ishopmall Maven Webapp</name>
+  <name>eBuy Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <repositories>
     <repository>
@@ -25,7 +25,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- spring版本号 -->
-    <spring.version>4.3.5.RELEASE</spring.version>
+    <spring.version>4.2.3.RELEASE</spring.version>
     <!-- mybatis版本号 -->
     <mybatis.version>3.4.1</mybatis.version>
   </properties>
@@ -170,7 +170,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>ishopmall</finalName>
+    <finalName>eBuy</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

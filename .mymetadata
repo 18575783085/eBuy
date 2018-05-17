@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-module
   type="WEB"
-  name="ishopmall"
+  name="eBuy"
   id="myeclipse.1511832943019"
-  context-root="/ishopmall"
+  context-root="/eBuy"
   j2ee-spec="1.7"
-  archive="ishopmall.war">
+  archive="eBuy.war">
   <attributes>
     <attribute name="webrootdir" value="src/main/webapp" />
   </attributes>
