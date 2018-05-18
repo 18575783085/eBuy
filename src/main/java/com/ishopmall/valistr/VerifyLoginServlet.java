@@ -2,7 +2,7 @@ package com.ishopmall.valistr;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.rmi.server.SkeletonNotFoundException;
+//import java.rmi.server.SkeletonNotFoundException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
