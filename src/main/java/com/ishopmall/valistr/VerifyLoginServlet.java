@@ -1,5 +1,9 @@
 package com.ishopmall.valistr;
 
+
+
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 //import java.rmi.server.SkeletonNotFoundException;
@@ -9,8 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -55,24 +57,21 @@ public class VerifyLoginServlet extends HttpServlet {
 			// 验证成功
 			PrintWriter out = response.getWriter();
 			JSONObject data = new JSONObject();
-			try {
-				data.put("status", "success");
-				data.put("version", gtSdk.getVersionInfo());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+
+            data.put("status", "success");
+            data.put("version", gtSdk.getVersionInfo());
+
 			out.println(data.toString());
 		}
 		else {
 			// 验证失败
 			JSONObject data = new JSONObject();
-			try {
-				data.put("status", "fail");
-				data.put("version", gtSdk.getVersionInfo());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			PrintWriter out = response.getWriter();
+
+                data.put("status", "fail");
+                data.put("version", gtSdk.getVersionInfo());
+
+
+            PrintWriter out = response.getWriter();
 			out.println(data.toString());
 		}
 

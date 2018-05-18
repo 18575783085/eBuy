@@ -52,7 +52,7 @@ health_check() {
 }
 start_application() {
     rm -f /usr/local/apache-tomcat/webapps/*
-    cp /home/admin/ishopmall/ishopmall.war /usr/local/apache-tomcat/webapps/
+    cp /home/admin/eBuy/eBuy.war /usr/local/apache-tomcat/webapps/
     echo 'starting the tomcat'
     rm -f /usr/local/apache-tomcat/logs/catalina.out
     /usr/local/apache-tomcat/bin/catalina.sh start

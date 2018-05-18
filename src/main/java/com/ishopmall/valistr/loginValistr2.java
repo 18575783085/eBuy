@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -90,23 +90,19 @@ public class loginValistr2 {
 				// 验证成功
 				PrintWriter out = response.getWriter();
 				JSONObject data = new JSONObject();
-				try {
+
 					data.put("status", "success");
 					data.put("version", gtSdk.getVersionInfo());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+
 				out.println(data.toString());
 			}
 			else {
 				// 验证失败
 				JSONObject data = new JSONObject();
-				try {
+
 					data.put("status", "fail");
 					data.put("version", gtSdk.getVersionInfo());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+
 				PrintWriter out = response.getWriter();
 				out.println(data.toString());
 			}
