@@ -39,4 +39,10 @@ public interface IndexDao {
 	MallNotice findNoticeWriteById(Integer noticeId);
 
 	int getCount();
+
+    /**
+     * 根据商品分类显示对应的商品
+     * @return
+     */
+    List<ItemCat> findShopItemList();
 }

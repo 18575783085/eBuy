@@ -18,4 +18,6 @@ public interface IndexService {
     MallNotice findNoticeWriteById(Integer noticeId);
 
 	int getCount();
+
+    List<ItemCat> findShopItemList();
 }

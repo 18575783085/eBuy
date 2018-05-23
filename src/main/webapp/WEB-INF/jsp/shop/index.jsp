@@ -193,48 +193,48 @@
     </script>
 </div>
 <div class="shopMainbg">
-    <c:forEach items="${ParentInfo}" begin="0" end="5" var="x">
+    <c:forEach items="${ParentInfoList}" begin="0" end="5" var="x">
     <div class="shopMain" id="shopmain">
         <!--手机-->
         <div class="am-container " >
             <div class="shopTitle ">
                 <h4 class="floor-title">${x.name}</h4>
-                <div class=""><h3>追上科技潮流</h3></div>
-                <div class="today-brands " style="right:0px ;top:13px;">
+                <div class=""><h3></h3></div>
+                <%--<div class="today-brands " style="right:0px ;top:13px;">
                     <a href="# ">VR</a>|
                     <a href="# ">3D投影</a>|
                     <a href="# ">栗子糕 </a>|
                     <a href="# ">马卡龙</a>|
                     <a href="# ">铜锣烧</a>|
                     <a href="# ">豌豆黄</a>
-                </div>
+                </div>--%>
 
             </div>
         </div>
 
         <div class="am-g am-g-fixed floodSix ">
-
+            <c:forEach items="${x.prodsInfoList}" begin="0" end="5" var="prods">
             <div class="am-u-sm-5 am-u-md-3 text-one list">
                 <div class="word">
                     <c:forEach items="${ParentInfoChild}" var="v">
                     <a class="outer" href="#"><span class="inner"><b class="text">${v.name}</b></span></a>
                     </c:forEach>
                 </div>
-                <a href="# ">
-                    <img src="${appPath}/images/5.jpg" />
+                <a href="${appPath}/introduction/intro?id=${prods.id}&pageNum=1&minproPageNum=1">
+                    ${prods.imgurl.substring(0,prods.imgurl.indexOf(","))}
                     <div class="outer-con ">
                         <div class="title ">
-                            零食大礼包开抢啦
+                                <%--${prods.name}--%>
                         </div>
                         <div class="sub-title ">
-                            当小鱼儿恋上软豆腐
+                                ${prods.name}
                         </div>
                     </div>
                 </a>
                 <div class="triangle-topright"></div>
             </div>
-
-            <div class="am-u-sm-7 am-u-md-5 am-u-lg-2 text-two big">
+            </c:forEach>
+            <%--<div class="am-u-sm-7 am-u-md-5 am-u-lg-2 text-two big">
 
                 <div class="outer-con ">
                     <div class="title ">
@@ -246,9 +246,8 @@
 
                 </div>
                 <a href="# "><img src="${appPath}/images/act1.png" /></a>
-            </div>
-
-            <li>
+            </div>--%>
+            <%--<li>
                 <div class="am-u-md-2 am-u-lg-2 text-three">
                     <div class="boxLi"></div>
                     <div class="outer-con ">
@@ -322,7 +321,8 @@
                     </div>
                     <a href="# "><img src="${appPath}/images/4.jpg" /></a>
                 </div>
-            </li>
+            </li>--%>
+
         </div>
         <div class="clear "></div>
     </div>

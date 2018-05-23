@@ -38,12 +38,18 @@ public class Index {
         List<MallNotice> mallNotices = selectNoticeTitle();
         model.addAttribute("mallNotices", mallNotices);
         model.addAttribute("ParentInfo", indexSort());
+        model.addAttribute("ParentInfoList", prodsList());
+
         return "shop/index";
     }
 
     //首页加载下拉
     public List<ItemCat> indexSort() {
         return indexService.selectshopItemParent();
+    }
+
+    public List<ItemCat> prodsList(){
+        return indexService.findShopItemList();
     }
 
     //加载对应的二级分类

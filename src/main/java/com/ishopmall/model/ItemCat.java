@@ -1,6 +1,7 @@
 package com.ishopmall.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 描述：
@@ -15,6 +16,7 @@ public class ItemCat {
     private String name;
     private Integer status;
     private ItemCat parentItemCat;
+    private List<ProdsInfo> prodsInfoList;
 
     public Integer getpId(){
         return parentId;
@@ -60,14 +62,23 @@ public class ItemCat {
         this.status = status;
     }
 
+    public List<ProdsInfo> getProdsInfoList() {
+        return prodsInfoList;
+    }
+
+    public void setProdsInfoList(List<ProdsInfo> prodsInfoList) {
+        this.prodsInfoList = prodsInfoList;
+    }
+
     @Override
     public String toString() {
         return "ItemCat{" +
-                "Id='" + Id + '\'' +
+                "Id=" + Id +
                 ", parentId=" + parentId +
                 ", name='" + name + '\'' +
                 ", status=" + status +
                 ", parentItemCat=" + parentItemCat +
+                ", prodsInfoList=" + prodsInfoList +
                 '}';
     }
 }

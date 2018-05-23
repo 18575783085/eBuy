@@ -43,4 +43,49 @@
     <select id="getCount" resultType="Integer">
     	select count(*) from tb_mall_notice
     </select>
+
+    <resultMap id="itemCatProds" type="ItemCat" autoMapping="true">
+        <id column="d_id" property="id"/>
+        <result column="d_name" property="name"></result>
+        <collection property="prodsInfoList" ofType="com.ishopmall.model.ProdsInfo" >
+            <id column="id" property="id"></id>
+            <result column="class_id" property="classId"></result>
+            <result column="name" property="name"></result>
+            <result column="title" property="title"></result>
+            <result column="sale_price" property="salePrice"></result>
+            <result column="promotion_price" property="promotionPrice"></result>
+            <result column="prods_num" property="prodsNum"></result>
+            <result column="sale_num" property="saleNum"></result>
+            <result column="imgurl" property="imgurl"></result>
+            <result column="remark" property="remark"></result>
+            <result column="created" property="created"></result>
+            <result column="updated" property="updated"></result>
+            <result column="status" property="status"></result>
+        </collection>
+    </resultMap>
+    <!--根据每一个父标题查询对应的所有商品信息-->
+    <select id="findShopItemList" resultMap="itemCatProds">
+        SELECT
+        d.d_id,
+        d.d_name,
+        t.id,
+        t.class_id,
+        t.name,
+        t.sale_price,
+        t.promotion_price,
+        t.prods_num,
+        t.sale_num,
+        t.imgurl,
+        t.remark,
+        t.created,
+        t.updated,
+        t.status
+        from tb_prods_info t
+        LEFT JOIN
+        (SELECT id d_id,name d_name from tb_item_cat) d
+        on
+        t.class_id = d.d_id
+        ORDER BY
+        d.d_id
+    </select>
 </mapper>

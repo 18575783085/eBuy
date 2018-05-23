@@ -44,4 +44,9 @@ public class IndexServiceImpl implements IndexService {
 		
 		return indexDao.getCount();
 	}
+
+    @Override
+    public List<ItemCat> findShopItemList() {
+        return indexDao.findShopItemList();
+    }
 }
